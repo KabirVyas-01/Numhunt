@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number Guessing Game | Created by Kabir Vyas</title>
+    <!-- Google Fonts for crisp, modern typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎯</text></svg>">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-glow"></div>
+    <div class="background-grid"></div>
+
+    <div class="app-container">
+        <!-- Persistent Top Header -->
+        <header class="app-header">
+            <div class="brand-container" onclick="showScreen('menu-screen')">
+                <div class="brand-icon">🎯</div>
+                <div class="brand-text">
+                    <h1 class="brand-title">Number Guessing Game</h1>
+                    <div class="creator-tag">
+                        <span class="sparkle">✨</span> Created by <span class="creator-name">Kabir Vyas</span>
+                    </div>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="icon-btn" id="audio-toggle-btn" title="Toggle Sound Effects" onclick="toggleAudio()">
+                    <span id="audio-icon">🔊</span>
+                </button>
+                <button class="nav-btn" id="rules-btn" onclick="openModal('rules-modal')">
+                    📖 Rules
+                </button>
+                <button class="nav-btn secondary-btn hidden" id="header-back-btn" onclick="showScreen('menu-screen')">
+                    🏠 Main Menu
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content Screens -->
+        <main class="main-content">
+
+            <!-- ========================================================= -->
+            <!-- 1. MAIN MENU SCREEN                                       -->
+            <!-- ========================================================= -->
+            <section id="menu-screen" class="view-screen active">
+                <div class="hero-section">
+                    <div class="hero-badge">CSE Project Edition</div>
+                    <h2 class="hero-title">Test Your Logic & Precision</h2>
+                    <p class="hero-subtitle">Choose your challenge mode below and crack the secret numbers!</p>
+                </div>
+
+                <div class="mode-cards-grid">
+                    <!-- Mode 1: Single Player -->
+                    <div class="mode-card" onclick="startSinglePlayerSetup()">
+                        <div class="card-glow glow-cyan"></div>
+                        <div class="card-icon-wrapper cyan-accent">
+                            <span class="card-icon">🎮</span>
+                        </div>
+                        <div class="card-content">
+                            <span class="mode-tag">Solo Mode</span>
+                            <h3 class="card-title">Single Player</h3>
+                            <p class="card-desc">Play against the machine across 2 difficulty levels with special extreme hints.</p>
+                            <ul class="card-features">
+                                <li>Level 1: 1–100 (10 Attempts)</li>
+                                <li>Level 2: 1–1000 (15 Attempts)</li>
+                            </ul>
+                        </div>
+                        <button class="card-play-btn cyan-btn">Play Solo →</button>
+                    </div>
+
+                    <!-- Mode 2: Multiplayer Tournament -->
+                    <div class="mode-card" onclick="startMultiplayerSetup()">
+                        <div class="card-glow glow-purple"></div>
+                        <div class="card-icon-wrapper purple-accent">
+                            <span class="card-icon">👥</span>
+                        </div>
+                        <div class="card-content">
+                            <span class="mode-tag">2 to 4 Players</span>
+                            <h3 class="card-title">Multiplayer Tournament</h3>
+                            <p class="card-desc">Compete with friends sequentially. Lowest attempts takes home the championship crown!</p>
+                            <ul class="card-features">
+                                <li>Range: 1–100 (10 Attempts each)</li>
+                                <li>Ranked Live Leaderboard</li>
+                            </ul>
+                        </div>
+                        <button class="card-play-btn purple-btn">Start Tournament →</button>
+                    </div>
+
+                    <!-- Mode 3: Head-to-Head Duel -->
+                    <div class="mode-card" onclick="startDuelSetup()">
+                        <div class="card-glow glow-amber"></div>
+                        <div class="card-icon-wrapper amber-accent">
+                            <span class="card-icon">⚔️</span>
+                        </div>
+                        <div class="card-content">
+                            <span class="mode-tag">1v1 PVP</span>
+                            <h3 class="card-title">Head-to-Head Duel</h3>
+                            <p class="card-desc">Set secret numbers for each other in private and take alternating turns guessing.</p>
+                            <ul class="card-features">
+                                <li>Range: 1–100 (Hidden Setups)</li>
+                                <li>First correct guess wins instantly</li>
+                            </ul>
+                        </div>
+                        <button class="card-play-btn amber-btn">Enter Duel →</button>
+                    </div>
+                </div>
+
+                <!-- Footer attribution -->
+                <footer class="app-footer">
+                    <p>Crafted with pride &amp; precision by <strong class="highlight-name">Kabir Vyas</strong></p>
+                </footer>
+            </section>
+
+
+            <!-- ========================================================= -->
+            <!-- 2. SINGLE PLAYER SCREEN                                   -->
+            <!-- ========================================================= -->
+            <section id="single-player-screen" class="view-screen">
+                <!-- Level Select State -->
+                <div id="sp-level-select" class="glass-panel text-center">
+                    <div class="panel-header">
+                        <span class="panel-badge">Mode 1: Solo</span>
+                        <h2 class="panel-title">Choose Difficulty Level</h2>
+                        <p class="panel-subtitle">Select the challenge that fits your skill level:</p>
+                    </div>
+
+                    <div class="level-options-grid">
+                        <div class="level-card" onclick="initSinglePlayerGame(1)">
+                            <div class="level-badge badge-green">Casual</div>
+                            <h3>Level 1: Novice</h3>
+                            <div class="level-spec">
+                                <div class="spec-item"><span class="spec-label">Range:</span> <strong>1 – 100</strong></div>
+                                <div class="spec-item"><span class="spec-label">Max Attempts:</span> <strong>10</strong></div>
+                            </div>
+                            <button class="btn btn-primary btn-full">Start Level 1</button>
+                        </div>
+
+                        <div class="level-card featured-level" onclick="initSinglePlayerGame(2)">
+                            <div class="level-badge badge-gold">Extreme</div>
+                            <h3>Level 2: Master</h3>
+                            <div class="level-spec">
+                                <div class="spec-item"><span class="spec-label">Range:</span> <strong>1 – 1000</strong></div>
+                                <div class="spec-item"><span class="spec-label">Max Attempts:</span> <strong>15</strong></div>
+                                <div class="spec-hint-note">🔥 Includes Extreme Hint (|diff| > 500)</div>
+                            </div>
+                            <button class="btn btn-gold btn-full">Start Level 2</button>
+                        </div>
+                    </div>
+
+                    <div class="panel-actions">
+                        <button class="btn btn-secondary" onclick="showScreen('menu-screen')">← Back to Main Menu</button>
+                    </div>
+                </div>
+
+                <!-- Active Game Arena -->
+                <div id="sp-arena" class="game-arena glass-panel hidden">
+                    <div class="arena-header">
+                        <div class="arena-info">
+                            <span class="arena-tag" id="sp-level-tag">Level 1</span>
+                            <h2 class="arena-title" id="sp-arena-title">Guess the Number</h2>
+                            <div class="arena-range" id="sp-range-display">Range: 1 – 100</div>
+                        </div>
+                        <div class="arena-stats">
+                            <div class="stat-box">
+                                <span class="stat-label">Attempts Left</span>
+                                <span class="stat-value" id="sp-attempts-left">10</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-label">Current Attempt</span>
+                                <span class="stat-value" id="sp-current-attempt">#1</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visual Attempts Progress Bar -->
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="sp-progress-bar" style="width: 100%;"></div>
+                    </div>
+
+                    <!-- Extreme Hint Banner Container -->
+                    <div id="sp-extreme-hint-box" class="hint-alert-box hidden">
+                        <span class="hint-icon">⚡</span>
+                        <div class="hint-text" id="sp-extreme-hint-text"></div>
+                    </div>
+
+                    <!-- Live Feedback Banner -->
+                    <div id="sp-feedback-box" class="feedback-banner neutral">
+                        <span class="feedback-icon" id="sp-feedback-icon">🎯</span>
+                        <span class="feedback-msg" id="sp-feedback-msg">Enter your first guess below to begin!</span>
+                    </div>
+
+                    <!-- Guess Input Form -->
+                    <form class="guess-form" onsubmit="handleSinglePlayerGuess(event)">
+                        <div class="input-group">
+                            <input 
+                                type="number" 
+                                id="sp-guess-input" 
+                                class="large-input" 
+                                placeholder="Enter your guess..." 
+                                autocomplete="off"
+                                required
+                            >
+                            <button type="submit" class="btn btn-primary submit-btn" id="sp-submit-btn">
+                                Submit Guess ↵
+                            </button>
+                        </div>
+                        <div class="input-error" id="sp-input-error"></div>
+                    </form>
+
+                    <!-- Guess History Section -->
+                    <div class="history-section">
+                        <h4 class="history-title">Round Guess History</h4>
+                        <div class="history-chips" id="sp-history-chips">
+                            <span class="no-history-text">No guesses yet</span>
+                        </div>
+                    </div>
+
+                    <div class="arena-footer">
+                        <button class="btn btn-secondary btn-sm" onclick="showScreen('menu-screen')">Exit to Menu</button>
+                        <button class="btn btn-outline btn-sm" onclick="restartSinglePlayerRound()">Restart Round</button>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- ========================================================= -->
+            <!-- 3. MULTIPLAYER TOURNAMENT SCREEN                          -->
+            <!-- ========================================================= -->
+            <section id="multiplayer-screen" class="view-screen">
+                <!-- Setup Phase -->
+                <div id="mp-setup" class="glass-panel">
+                    <div class="panel-header text-center">
+                        <span class="panel-badge">Mode 2: Tournament</span>
+                        <h2 class="panel-title">Multiplayer Tournament Setup</h2>
+                        <p class="panel-subtitle">Fixed Range: 1 to 100 | 10 Attempts per player</p>
+                    </div>
+
+                    <div class="setup-group">
+                        <label class="setup-label">Select Number of Players:</label>
+                        <div class="player-count-pills">
+                            <button type="button" class="pill-btn active" onclick="setMultiplayerCount(2)">2 Players</button>
+                            <button type="button" class="pill-btn" onclick="setMultiplayerCount(3)">3 Players</button>
+                            <button type="button" class="pill-btn" onclick="setMultiplayerCount(4)">4 Players</button>
+                        </div>
+                    </div>
+
+                    <div class="setup-group">
+                        <label class="setup-label">Player Names:</label>
+                        <div class="player-names-inputs" id="mp-name-inputs-container">
+                            <!-- Populated dynamically via script.js -->
+                        </div>
+                    </div>
+
+                    <div class="panel-actions space-between">
+                        <button class="btn btn-secondary" onclick="showScreen('menu-screen')">← Back to Menu</button>
+                        <button class="btn btn-primary" onclick="startMultiplayerTournament()">Start Tournament 🚀</button>
+                    </div>
+                </div>
+
+                <!-- Player Round Arena -->
+                <div id="mp-arena" class="game-arena glass-panel hidden">
+                    <div class="arena-header">
+                        <div class="arena-info">
+                            <span class="arena-tag purple-tag" id="mp-round-indicator">Round 1 of 2</span>
+                            <h2 class="arena-title" id="mp-player-title">Player 1's Turn</h2>
+                            <div class="arena-range">Range: 1 – 100 | Max 10 Attempts</div>
+                        </div>
+                        <div class="arena-stats">
+                            <div class="stat-box">
+                                <span class="stat-label">Attempts Left</span>
+                                <span class="stat-value" id="mp-attempts-left">10</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-label">Attempt</span>
+                                <span class="stat-value" id="mp-current-attempt">#1</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="progress-bar-container">
+                        <div class="progress-bar purple-bar" id="mp-progress-bar" style="width: 100%;"></div>
+                    </div>
+
+                    <div id="mp-feedback-box" class="feedback-banner neutral">
+                        <span class="feedback-icon" id="mp-feedback-icon">👥</span>
+                        <span class="feedback-msg" id="mp-feedback-msg">It's your turn! Guess the secret number.</span>
+                    </div>
+
+                    <form class="guess-form" onsubmit="handleMultiplayerGuess(event)">
+                        <div class="input-group">
+                            <input 
+                                type="number" 
+                                id="mp-guess-input" 
+                                class="large-input" 
+                                placeholder="Enter guess (1-100)..." 
+                                min="1" 
+                                max="100" 
+                                autocomplete="off"
+                                required
+                            >
+                            <button type="submit" class="btn btn-primary submit-btn">
+                                Submit Guess ↵
+                            </button>
+                        </div>
+                        <div class="input-error" id="mp-input-error"></div>
+                    </form>
+
+                    <div class="history-section">
+                        <h4 class="history-title"><span id="mp-history-player-name">Player</span>'s Guess History</h4>
+                        <div class="history-chips" id="mp-history-chips">
+                            <span class="no-history-text">No guesses yet</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Final Scoreboard & Leaderboard -->
+                <div id="mp-scoreboard" class="glass-panel hidden text-center">
+                    <div class="panel-header">
+                        <div class="crown-icon">👑</div>
+                        <h2 class="panel-title">Tournament Results</h2>
+                        <div class="champion-banner" id="mp-champion-banner">
+                            <!-- Populated with winner or tie-winner names -->
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="leaderboard-table">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Player Name</th>
+                                    <th>Attempts Taken</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="mp-leaderboard-body">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="panel-actions center-actions">
+                        <button class="btn btn-secondary" onclick="showScreen('menu-screen')">Main Menu</button>
+                        <button class="btn btn-primary" onclick="startMultiplayerSetup()">New Tournament</button>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- ========================================================= -->
+            <!-- 4. HEAD-TO-HEAD DUEL SCREEN (1V1 PVP)                     -->
+            <!-- ========================================================= -->
+            <section id="duel-screen" class="view-screen">
+                <!-- Duel Setup Phase -->
+                <div id="duel-setup" class="glass-panel">
+                    <div class="panel-header text-center">
+                        <span class="panel-badge amber-badge">Mode 3: 1v1 PVP</span>
+                        <h2 class="panel-title">Head-to-Head Duel Setup</h2>
+                        <p class="panel-subtitle">Fixed Range: 1 to 100 | Set hidden numbers for each other!</p>
+                    </div>
+
+                    <div class="duel-setup-grid">
+                        <!-- Player 1 Setup Box -->
+                        <div class="duel-player-card">
+                            <div class="player-card-header">
+                                <span class="player-avatar">🗡️</span>
+                                <h3>Player 1</h3>
+                            </div>
+                            <div class="setup-group">
+                                <label>Name:</label>
+                                <input type="text" id="duel-p1-name" class="text-input" placeholder="Player 1" value="Player 1">
+                            </div>
+                            <div class="setup-group">
+                                <label>Secret Number for Player 2 (1–100):</label>
+                                <div class="password-wrapper">
+                                    <input 
+                                        type="password" 
+                                        id="duel-p1-secret" 
+                                        class="text-input masked-input" 
+                                        placeholder="Secret (1-100)" 
+                                        min="1" 
+                                        max="100"
+                                    >
+                                    <button type="button" class="eye-toggle-btn" onclick="toggleSecretVisibility('duel-p1-secret', this)">👁️</button>
+                                </div>
+                                <span class="input-subtext">Keep this hidden from Player 2!</span>
+                            </div>
+                        </div>
+
+                        <!-- Player 2 Setup Box -->
+                        <div class="duel-player-card">
+                            <div class="player-card-header">
+                                <span class="player-avatar">🛡️</span>
+                                <h3>Player 2</h3>
+                            </div>
+                            <div class="setup-group">
+                                <label>Name:</label>
+                                <input type="text" id="duel-p2-name" class="text-input" placeholder="Player 2" value="Player 2">
+                            </div>
+                            <div class="setup-group">
+                                <label>Secret Number for Player 1 (1–100):</label>
+                                <div class="password-wrapper">
+                                    <input 
+                                        type="password" 
+                                        id="duel-p2-secret" 
+                                        class="text-input masked-input" 
+                                        placeholder="Secret (1-100)" 
+                                        min="1" 
+                                        max="100"
+                                    >
+                                    <button type="button" class="eye-toggle-btn" onclick="toggleSecretVisibility('duel-p2-secret', this)">👁️</button>
+                                </div>
+                                <span class="input-subtext">Keep this hidden from Player 1!</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="input-error text-center" id="duel-setup-error"></div>
+
+                    <div class="panel-actions space-between">
+                        <button class="btn btn-secondary" onclick="showScreen('menu-screen')">← Back to Menu</button>
+                        <button class="btn btn-gold" onclick="startDuelGame()">Start Duel ⚔️</button>
+                    </div>
+                </div>
+
+                <!-- Duel Arena Phase -->
+                <div id="duel-arena" class="game-arena glass-panel hidden">
+                    <div class="arena-header">
+                        <div class="arena-info">
+                            <span class="arena-tag amber-tag" id="duel-round-badge">Round 1</span>
+                            <h2 class="arena-title" id="duel-turn-title">Player 1's Turn</h2>
+                            <div class="arena-range" id="duel-target-desc">Guessing Player 2's Secret Number (1–100)</div>
+                        </div>
+                        <div class="duel-versus-badge">
+                            <span id="duel-p1-tag">P1</span> <span class="vs-text">VS</span> <span id="duel-p2-tag">P2</span>
+                        </div>
+                    </div>
+
+                    <div id="duel-feedback-box" class="feedback-banner neutral">
+                        <span class="feedback-icon" id="duel-feedback-icon">⚔️</span>
+                        <span class="feedback-msg" id="duel-feedback-msg">Take your turn! Guess opponent's secret number.</span>
+                    </div>
+
+                    <form class="guess-form" onsubmit="handleDuelGuess(event)">
+                        <div class="input-group">
+                            <input 
+                                type="number" 
+                                id="duel-guess-input" 
+                                class="large-input" 
+                                placeholder="Enter guess (1-100)..." 
+                                min="1" 
+                                max="100" 
+                                autocomplete="off"
+                                required
+                            >
+                            <button type="submit" class="btn btn-gold submit-btn">
+                                Strike Guess ↵
+                            </button>
+                        </div>
+                        <div class="input-error" id="duel-input-error"></div>
+                    </form>
+
+                    <!-- Duel Split History -->
+                    <div class="duel-history-grid">
+                        <div class="duel-history-column">
+                            <h4 id="duel-p1-history-title">Player 1's Guesses</h4>
+                            <div class="history-chips" id="duel-p1-chips">
+                                <span class="no-history-text">No guesses</span>
+                            </div>
+                        </div>
+                        <div class="duel-history-column">
+                            <h4 id="duel-p2-history-title">Player 2's Guesses</h4>
+                            <div class="history-chips" id="duel-p2-chips">
+                                <span class="no-history-text">No guesses</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- MODALS & OVERLAYS                                         -->
+    <!-- ========================================================= -->
+
+    <!-- Victory / Game Over Modal -->
+    <div id="result-modal" class="modal-overlay hidden">
+        <div class="modal-card glass-panel text-center">
+            <div class="modal-icon" id="result-modal-icon">🏆</div>
+            <h2 class="modal-title" id="result-modal-title">Victory!</h2>
+            <p class="modal-subtitle" id="result-modal-subtitle">You cracked the secret number!</p>
+            
+            <div class="result-details-box" id="result-modal-details">
+                <!-- Injected via script.js -->
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal('result-modal'); showScreen('menu-screen');">Main Menu</button>
+                <button class="btn btn-primary" id="result-action-btn" onclick="handleResultModalAction()">Play Again</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transition Notice Modal (For Multiplayer & Duel Next Player) -->
+    <div id="transition-modal" class="modal-overlay hidden">
+        <div class="modal-card glass-panel text-center">
+            <div class="modal-icon">🔄</div>
+            <h2 class="modal-title" id="trans-modal-title">Round Complete!</h2>
+            <p class="modal-subtitle" id="trans-modal-subtitle">Pass the screen to the next player.</p>
+            <div class="modal-actions center-actions">
+                <button class="btn btn-primary btn-lg" id="trans-modal-btn" onclick="executeTransitionAction()">
+                    I'm Ready! Let's Go →
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Rules Modal -->
+    <div id="rules-modal" class="modal-overlay hidden">
+        <div class="modal-card glass-panel rules-modal-card">
+            <div class="modal-header-row">
+                <h2 class="modal-title">📜 Official Game Rules</h2>
+                <button class="close-modal-btn" onclick="closeModal('rules-modal')">✕</button>
+            </div>
+            
+            <div class="rules-content">
+                <div class="rule-block">
+                    <h3>🎮 Mode 1: Single Player</h3>
+                    <ul>
+                        <li><strong>Level 1:</strong> Range 1 to 100 | 10 Attempts max.</li>
+                        <li><strong>Level 2:</strong> Range 1 to 1000 | 15 Attempts max.</li>
+                        <li><strong>Extreme Hint (Level 2 Only):</strong> If your guess is more than 500 away from the secret number, you get a special <em>"Too high!"</em> or <em>"Too low!"</em> hint (triggers only once per round).</li>
+                        <li><strong>Standard Feedback:</strong> "You guessed it higher" / "You guessed it lower" / "Correct!".</li>
+                    </ul>
+                </div>
+
+                <div class="rule-block">
+                    <h3>👥 Mode 2: Multiplayer Tournament</h3>
+                    <ul>
+                        <li>Supports <strong>2 to 4 Players</strong>.</li>
+                        <li>Fixed range <strong>1 to 100</strong> with <strong>10 attempts</strong> per player.</li>
+                        <li>Players take sequential full rounds against their own secret number.</li>
+                        <li>The player who solves it in the <strong>lowest number of tries</strong> wins. Ties are gracefully crowned together!</li>
+                    </ul>
+                </div>
+
+                <div class="rule-block">
+                    <h3>⚔️ Mode 3: Head-to-Head Duel</h3>
+                    <ul>
+                        <li>1v1 PVP match. Fixed range <strong>1 to 100</strong>.</li>
+                        <li>Player 1 and Player 2 secretly set numbers for each other.</li>
+                        <li>Take alternating turns guessing your opponent's secret number.</li>
+                        <li>First player to guess correctly wins instantly!</li>
+                    </ul>
+                </div>
+
+                <div class="attribution-note">
+                    Project Created by <strong>Kabir Vyas</strong>
+                </div>
+            </div>
+
+            <div class="modal-actions center-actions">
+                <button class="btn btn-primary" onclick="closeModal('rules-modal')">Got it!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Canvas for Celebratory Victory Confetti -->
+    <canvas id="confetti-canvas"></canvas>
+
+    <script src="script.js"></script>
+</body>
+</html>
