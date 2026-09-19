@@ -3,6 +3,9 @@
 An interactive, multi-mode Number Guessing Game designed and developed by **Kabir Vyas**. This project contains both a **modular C language console program** and a **responsive web application** built with vanilla HTML, CSS, and JavaScript.
 
 ---
+## live URL link of Numhunt -> https://kabirvyas-numhunt-game.netlify.app 
+
+---
 
 ## 🚀 Game Modes & Features
 
